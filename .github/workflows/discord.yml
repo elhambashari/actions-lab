@@ -1,18 +1,22 @@
-name: Discord Notification
+name: Meddela Discord
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  notify-discord:
+  notis:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Send message to Discord
+      - name: Skicka meddelande
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          VEM: ${{ github.actor }}
+          REPO: ${{ github.repository }}
+
         run: |
-          curl -H "Content-Type: application/json" \
-          -X POST \
-          -d "{\"content\":\"🚀 Ny push till actions-lab av ${{ github.actor }}\"}" \
-          "${{ secrets.DISCORD_WEBHOOK }}"
+          curl --fail-with-body -X POST \
+            -H "Content-Type: application/json" \
+            -d "{\"content\": \"$VEM pushade till $REPO\"}" \
+            "$WEBHOOK"
